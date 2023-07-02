@@ -17,8 +17,15 @@ namespace AnimalShelterApi.Controllers
 
     // GET api/animals
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Animal>>> Get()
+    public async Task<ActionResult<IEnumerable<Animal>>> Get(string species)
     {
+      IQueryable<Animal> query = _db.Animals.AsQueryable();
+
+      if (species != null)
+      {
+        query = query.Where(EntryPointNotFoundException => EntryPointNotFoundException.Species ==species);
+      }
+
       return await _db.Animals.ToListAsync();
     }
 

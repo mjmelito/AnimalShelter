@@ -17,16 +17,41 @@ namespace AnimalShelterApi.Controllers
 
     // GET api/animals
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Animal>>> Get(string species)
+    public async Task<List<Animal>> Get(string species, string breed, string name, int age, int minimumAge, int maximumAge)
     {
       IQueryable<Animal> query = _db.Animals.AsQueryable();
 
       if (species != null)
       {
-        query = query.Where(EntryPointNotFoundException => EntryPointNotFoundException.Species ==species);
+        query = query.Where(entry => entry.Species == species);
       }
 
-      return await _db.Animals.ToListAsync();
+      if (breed != null)
+      {
+        query = query.Where(entry => entry.Breed == breed);
+      }
+
+      if (name != null)
+      {
+        query = query.Where(entry => entry.Name == name);
+      }
+
+      if (age != 0)
+      {
+        query = query.Where(entry => entry.Age == age);
+      }
+
+      if (minimumAge > 0)
+      {
+        query = query.Where(entry => entry.Age >= minimumAge);
+      }
+
+      if (maximumAge < 0)
+      {
+        query = query.Where(entry => entry.Age <= maximumAge);
+      }
+
+      return await query.ToListAsync();
     }
 
     // GET: api/Animals/5
